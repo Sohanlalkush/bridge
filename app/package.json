@@ -1,0 +1,16 @@
+{
+  "name": "web-phone-gateway",
+  "version": "1.0.0",
+  "description": "Minimal WebRTC-to-SIP bridge for browser softphone",
+  "main": "proxy.js",
+  "scripts": {
+    "start": "node proxy.js",
+    "generate-cert": "node generate-cert.js"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

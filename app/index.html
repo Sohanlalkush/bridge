@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Phone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status.online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Login Section */
+        #loginSection {
+            display: block;
+        }
+
+        #loginSection.hidden {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button.danger {
+            background: #dc3545;
+        }
+
+        button.danger:hover {
+            background: #c82333;
+        }
+
+        /* Call Section */
+        #callSection {
+            display: none;
+        }
+
+        #callSection.active {
+            display: block;
+        }
+
+        .dial-input {
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            min-height: 40px;
+        }
+
+        .dialpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dialpad button {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .call-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .call-controls button {
+            padding: 12px;
+        }
+
+        .logout-btn {
+            background: #6c757d;
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        .logout-btn:hover {
+            background: #5a6268;
+        }
+
+        /* Incoming Call */
+        .incoming-call {
+            display: none;
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .incoming-call.active {
+            display: block;
+        }
+
+        .incoming-call h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .incoming-call .number {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .incoming-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .incoming-controls button {
+            padding: 12px;
+        }
+
+        .answer-btn {
+            background: #28a745;
+        }
+
+        .answer-btn:hover {
+            background: #218838;
+        }
+
+        .reject-btn {
+            background: #dc3545;
+        }
+
+        .reject-btn:hover {
+            background: #c82333;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 Web Phone</h1>
+            <div class="status" id="statusBadge">Offline</div>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <!-- LOGIN SECTION -->
+        <div id="loginSection">
+            <div class="form-group">
+                <label>Extension</label>
+                <input type="text" id="extension" placeholder="e.g., 112" maxlength="10">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+
+            <button onclick="app.login()">Login</button>
+        </div>
+
+        <!-- CALL SECTION -->
+        <div id="callSection">
+            <button class="logout-btn" onclick="app.logout()">Logout</button>
+
+            <!-- Incoming Call -->
+            <div id="incomingCall" class="incoming-call">
+                <h3>Incoming Call</h3>
+                <div class="number" id="incomingNumber">Unknown</div>
+                <div class="incoming-controls">
+                    <button class="answer-btn" onclick="app.answer()">Answer</button>
+                    <button class="reject-btn" onclick="app.reject()">Reject</button>
+                </div>
+            </div>
+
+            <!-- Dial Pad -->
+            <div class="dial-input" id="dialDisplay"></div>
+
+            <div class="dialpad" id="dialpad"></div>
+
+            <!-- Call Controls -->
+            <div class="call-controls" id="callControls" style="display: none;">
+                <button onclick="app.toggleMute()">🔇 Mute</button>
+                <button onclick="app.toggleHold()">⏸️ Hold</button>
+                <button class="danger" onclick="app.hangup()">📞 Hangup</button>
+            </div>
+
+            <!-- Active Call Button -->
+            <button id="callBtn" onclick="app.call()" style="display: none;">Call</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jssip@latest/dist/jssip.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
